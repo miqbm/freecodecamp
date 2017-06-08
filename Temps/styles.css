@@ -1,0 +1,24 @@
+html, body, .container-table {
+    height: 100%;
+}
+
+#direccio {
+    font-size: 25px;
+}
+
+.t {
+    font-size: 22px;
+}
+
+.container-table {
+    display: table;
+}
+
+.vertical-center-row {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+canvas {
+    cursor: pointer;
+}

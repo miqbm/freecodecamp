@@ -1,0 +1,19 @@
+.titol {
+    /*background-color: #eeeeee;*/
+    height: 300px;
+    padding-top: 100px;
+}
+
+.projectes {
+    padding: 20px 0px 0px 20px;
+    /*background-color:#6e6e6e ;*/
+}
+
+.contactar {
+    /*background-color: #c0c0c0;*/
+    padding: 20px 0px 0px 20px;
+        height: 250px;
+}
+
+ li{display:inline;}
+ .card-block {border:none;}

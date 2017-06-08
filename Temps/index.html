@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script src="http://maps.google.com/maps/api/js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/skycons/1396634940/skycons.js" crossorigin="anonymous"></script>    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <title>Document</title>
+</head>
+<body>
+    
+    <div class="container container-table">
+    <div class="row vertical-center-row">
+        <div class="text-center">
+            <div id="direccio"> </div><br>
+            <div id="carregant">Loading....</div>
+            <div id="resultat" style="display: none">
+                <canvas id="icona" width="128" height="128" onclick="canviaUnitats();"></canvas>
+                <div id="titol" ></div>
+                <span class="t" id="temperaturaF" style="display: none"></span>
+                <span class="t" id="temperaturaC"></span>
+                <!--<br><br>
+                <div id="jo"></div>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+
+$(document).ready(function() {
+    getLocation();
+    setInterval(function() {
+        getLocation();
+    }, 300000);
+});
+
+
+var temperaturaF;
+var carregat = false;
+
+function canviaUnitats() {
+    $("#temperaturaF").toggle("slow")
+    $("#temperaturaC").toggle("slow");
+}
+//Obtencio ciutat
+function obteCiutatGoogle(lat, long) {
+    var geo = new google.maps.Geocoder();
+    var localitzacio = new google.maps.LatLng(lat, long);
+    geo.geocode({ 'latLng': localitzacio },processGeocoder);
+}
+
+function processGeocoder(resultat, status) {
+    if (status == google.maps.GeocoderStatus.OK) {
+        for (var i = 0; i < resultat.length; i++) {
+            if (resultat[i].types[0] === "locality") {
+                 $("#direccio").html(resultat[i].address_components[0].long_name);
+                return;
+            }
+        }
+        $("#direccio").html("Location not found");
+    } else {
+        $("#direccio").html(status);
+    }
+}
+
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(ObteTemps);
+    } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+
+function ObteTemps(posicio) {
+
+    const timestamp = Math.floor(Date.now() / 1000);
+    var long = posicio.coords.longitude;
+    var lat = posicio.coords.latitude;
+
+    obteCiutatGoogle(lat, long);
+
+    var api = "https://api.darksky.net/forecast/370cff06a2f566cfe71816e98da8d343/";
+    api += lat + "," + long;
+    api += timestamp;
+    api += "?exclude=daily,hourly";
+
+    // $.getJSON( "https://api.darksky.net/forecast/370cff06a2f566cfe71816e98da8d343/42.3601,-71.0589,409467600?exclude=currently,flags", function( data ) {
+    $.getJSON( api, function( dades ) {
+        // console.log(dades);
+        temperaturaF = dades.currently.temperature;
+        $("#titol").html("Temperature");
+        $("#temperaturaF").html(temperaturaF + " ºF");
+        $("#temperaturaC").html(FtoC(temperaturaF) + " ºC");
+        // $("#jo").html("Miquel Busom");
+
+        if (!carregat) {
+            $("#carregant").hide("slow");
+            $("#resultat").show("slow");
+        }
+
+        var skyIcons = new Skycons({"color": "pink"});
+        skyIcons.add(document.getElementById("icona"), dades.currently.icon );
+        skyIcons.play();
+
+        carregat = true;
+    });
+}
+
+//Conversor de F a C
+function FtoC(f) {
+    var num = (f - 32) * (5 / 9);
+    return num.toFixed(2);
+}
+
+</script>
+</body>
+</html>
