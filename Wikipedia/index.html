@@ -4,9 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script><link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    
+
+<div class="container contenidor">
+
+<div class="row justify-content-md-center">
+    <div class="col-md-6 ">
+         <a href="#" onclick="obteArticleRandom();">Preview Random</a><br>
+         <a href="https://en.wikipedia.org/wiki/Special:Random"target=_"blank">Without preview random</a>
+    </div>
+    <div class="col-md-6 text-center">
+        Buscar
+    </div>
+</div>
+
+<div class="row ">
+    <div class="col-md-10">
+        <div class="card card-outline-primary mb-3">
+            <div class="card-block">
+                <h3 id="titol" class="card-title"></h3>
+                <div id="cos"></div>
+                <a id="aleatori" href="#" target="_blank" class="btn btn-secondary btn-sm">Show more...</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+   
+ </div>   
 </body>
+
+<script>   
+  
+function obteArticleRandom() {
+    var maximCars = 350;
+   var url = "http://en.wikipedia.org/w/api.php?action=query&generator=random&grnnamespace=0&prop=extracts&exchars=" + maximCars + "&format=json&callback=?";
+    $.getJSON(url ).done(function(data) {
+        var id = Object.keys(data.query.pages)[0];
+        var objecte = data.query.pages[id];
+
+console.log(data.query.pages);
+        $("#titol").html(objecte.title);
+
+        var index = objecte.extract.search("</p>");
+        $("#cos").html(objecte.extract.substring(0, index == -1 ? maximCars : index));
+        $("#aleatori").attr("href", "http://en.wikipedia.org/?curid=" + id);
+
+    }).fail(function(errors) {
+        console.log("ERROR: " + errors);
+    });
+}
+
+</script>
+
+
 </html>
