@@ -16,6 +16,8 @@
 }
 
  li{display:inline;}
- .card-block {border:none;}
+ .card-block {
+     border:none;
+     }
 
- 
+
