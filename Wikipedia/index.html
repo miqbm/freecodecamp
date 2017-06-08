@@ -42,7 +42,7 @@
 <script>   
   
 function obteArticleRandom() {
-    var maximCars = 350;
+    var maximCars = 400;
    var url = "http://en.wikipedia.org/w/api.php?action=query&generator=random&grnnamespace=0&prop=extracts&exchars=" + maximCars + "&format=json&callback=?";
     $.getJSON(url ).done(function(data) {
         var id = Object.keys(data.query.pages)[0];
